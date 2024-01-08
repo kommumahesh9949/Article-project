@@ -1,0 +1,105 @@
+use shopping;
+create database practice;
+
+use shopping;
+ALTER TABLE order_entity
+DROP FOREIGN KEY fk_cart_order;
+
+ALTER TABLE cart
+MODIFY cartid BIGINT NULL;
+
+
+ALTER TABLE order_entity
+ADD CONSTRAINT fk_cart_order
+FOREIGN KEY (cartid)
+REFERENCES cart(cartid)
+ON DELETE SET NULL;
+ALTER TABLE `cart`
+ADD COLUMN `quantity` BIGINT NULL ;
+ALTER TABLE `cart` MODIFY COLUMN `quantity` BIGINT NOT NULL DEFAULT 0;
+
+
+ALTER TABLE `product`
+DROP COLUMN `quantity`;
+
+
+CREATE TABLE `user` (
+
+  `userid` BIGINT NOT NULL AUTO_INCREMENT,
+
+  `firstname` VARCHAR(50) NULL DEFAULT NULL,
+
+  `username` VARCHAR(50) NULL DEFAULT NULL,
+
+  `lastname` VARCHAR(50) NULL DEFAULT NULL,
+
+  `email` VARCHAR(50) NULL,
+
+  `password` VARCHAR(32) NOT NULL,
+
+  `createdat` DATETIME NOT NULL,
+
+  `updatedat` DATETIME NULL DEFAULT NULL,
+
+  PRIMARY KEY (`userid`)
+
+);
+ 
+CREATE TABLE `product` (
+
+  `productid` BIGINT NOT NULL AUTO_INCREMENT,
+
+  `productname` VARCHAR(75) NOT NULL,
+
+  `productdescription` VARCHAR(100) NULL,
+
+  `productimage` BLOB NULL DEFAULT NULL,
+
+  `createdat` DATETIME NOT NULL,
+
+  `updatedat` DATETIME NULL DEFAULT NULL,
+
+  PRIMARY KEY (`productid`)
+
+);
+
+CREATE TABLE `cart` (
+
+  `cartid` BIGINT NOT NULL AUTO_INCREMENT,
+
+  `userid` BIGINT NULL DEFAULT NULL,
+
+  `productid` BIGINT NOT NULL,  
+
+  `createdat` DATETIME NOT NULL,
+
+  `updatedat` DATETIME NULL DEFAULT NULL,
+
+
+  PRIMARY KEY (`cartid`),
+
+  CONSTRAINT `fk_cart_product` FOREIGN KEY (`productid`) REFERENCES `product` (`productid`)
+
+);
+drop table order_entity;
+CREATE TABLE `order_entity` (
+  `orderid` BIGINT NOT NULL AUTO_INCREMENT,
+  `userid` BIGINT NULL DEFAULT NULL,
+  `productid` BIGINT NULL,
+  `cartid` BIGINT NOT NULL,
+  `createdat` DATETIME NOT NULL,
+  `updatedat` DATETIME NULL DEFAULT NULL,
+  `order_status` varchar(50)  NULL DEFAULT NULL,
+  PRIMARY KEY (`orderid`),
+  CONSTRAINT `fk_cart_order` FOREIGN KEY (`cartid`) REFERENCES `cart` (`cartid`),
+  CONSTRAINT `fk_user_order` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`)
+);
+ALTER TABLE order_entity
+DROP FOREIGN KEY fk_cart_order;
+
+ALTER TABLE order_entity
+ADD CONSTRAINT fk_cart_order
+FOREIGN KEY (cartid)
+REFERENCES cart(cartid)
+
+
